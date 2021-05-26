@@ -40,47 +40,11 @@ jobs:
           host: ${{ secrets.DROPLET1_HOST }}
           user: root
           key: ${{ secrets.DROPLET_SECRET }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
           port: 22
           command: |
             
             docker pull ${{ secrets.DOCKER_HUB_USER }}/api:latest
-
-            echo "calling shutdown endpoint..."
-            curl --silent http://localhost/shutdown || true
-
-            echo "giving healthcheck time to fail..."
-            sleep 30 # ((unhealthy + 1) * interval)
-
-            docker stop api || true
-            docker rm api || true
-
-            echo "starting server instance..."
-            docker run -d \
-              --restart always \
-              -p 0.0.0.0:80:80 \
-              --name api \
-              ${{ secrets.DOCKER_HUB_USER }}/api:latest
-
-            echo "giving healthcheck time to recover..."
-            sleep 40 # ((healthy + 1) * interval)
-
-            curl --silent --fail http://localhost/health
-
-  deploy-api-2:
-    needs: deploy-api-1 # rolling deploy
-    runs-on: ubuntu-latest
-    steps:
-      # Droplets already have docker, doctl + auth, and curl installed
-      - name: Deploy api to DigitalOcean Droplet
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.DROPLET2_HOST }}
-          username: root
-          key: ${{ secrets.DROPLET_SECRET }}
-          port: 22
-          script: |
-           
-            ${{ secrets.DOCKER_HUB_USER }}/api:latest
 
             echo "calling shutdown endpoint..."
             curl --silent http://localhost/shutdown || true
