@@ -5,7 +5,7 @@ const server = fastify();
 let die = false;
 const id = Math.floor(Math.random()*1000);
 
-server.get('/', async () => ({ api: 'happy response', id }));
+server.get('/', async () => ({ name: 'Telmo Sampaio', api: 'happy response', id }));
 
 server.get('/health', async (_req, reply) => {
   if (die) {
