@@ -35,14 +35,14 @@ jobs:
     steps:
       # Droplets already have docker, doctl + auth, and curl installed
       - name: Deploy api to DigitalOcean Droplet
-        uses: appleboy/ssh-action@v0.1.4
+        uses: fifsky/ssh-action@master
         with:
           host: ${{ secrets.DROPLET1_HOST }}
-          username: root
+          user: root
           key: ${{ secrets.DROPLET_SECRET }}
           port: 22
-          script: |
-            ssh-add ~/.ssh/${{ secrets.DROPLET_SECRET }}
+          command: |
+            
             docker pull ${{ secrets.DOCKER_HUB_USER }}/api:latest
 
             echo "calling shutdown endpoint..."
