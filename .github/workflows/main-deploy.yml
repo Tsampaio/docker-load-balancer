@@ -11,10 +11,6 @@ jobs:
     steps:
       - name: Check Out Repo 
         uses: actions/checkout@v2
-      - name: Install DigitalOcean Controller
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -46,7 +42,7 @@ jobs:
           key: ${{ secrets.DROPLET_SECRET }}
           port: 22
           script: |
-            
+            ssh-add ~/.ssh/${{ secrets.DROPLET_SECRET }}
             docker pull ${{ secrets.DOCKER_HUB_USER }}/api:latest
 
             echo "calling shutdown endpoint..."
